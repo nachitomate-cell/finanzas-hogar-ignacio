@@ -1196,78 +1196,82 @@ function removeStock(i){stockPortfolio.splice(i,1);save();renderStockChips();}
 
 async function analizarStocks(){
   if(!stockPortfolio.length){toast('⚠️ Agrega al menos un stock primero');return;}
+  
+  // Tu API KEY de Google
+  const GEMINI_KEY = "AIzaSyAcc0ApLpBSxqgG_c2FFqGt16pfTjwQ3WM";
+  
   const btn=document.getElementById('btn-analizar');
-  const icon=document.getElementById('ai-btn-icon');const txtEl=document.getElementById('ai-btn-text');
-  btn.disabled=true;icon.innerHTML='<span class="ai-spinner"></span>';txtEl.textContent='Analizando con IA...';
+  const icon=document.getElementById('ai-btn-icon');
+  const txtEl=document.getElementById('ai-btn-text');
+  
+  btn.disabled=true;
+  if(icon) icon.innerHTML='<span class="ai-spinner"></span>';
+  if(txtEl) txtEl.textContent='Analizando con Gemini...';
+  
   const wrap=document.getElementById('ai-result-wrap');
-  wrap.innerHTML=`<div class="card"><div style="display:flex;align-items:center;gap:10px;color:var(--muted);font-size:13px"><span class="ai-spinner"></span> Consultando mercado y generando análisis...</div></div>`;
+  wrap.innerHTML=`<div class="card"><div style="display:flex;align-items:center;gap:10px;color:var(--muted);font-size:13px"><span class="ai-spinner"></span> Consultando mercado y generando análisis profesional...</div></div>`;
 
   const portfolioDesc=stockPortfolio.map(s=>`${s.ticker} (${s.pct}%${s.val?`, $${Math.round(s.val).toLocaleString('es-CL')} CLP`:''})`).join(', ');
-  const ctx=document.getElementById('stock-context').value.trim();
-  const totalVal=stockPortfolio.reduce((s,x)=>s+(x.val||0),0);
-  const invData=inversiones.length?`Saldo total en Racional: ${fmt(inversiones.sort((a,b)=>b.year!==a.year?b.year-a.year:b.month-a.month)[0]?.saldo||0)} CLP.`:'';
+  const ctx=document.getElementById('stock-context')?.value.trim() || "";
 
-  const prompt=`Eres un analista financiero experto. El usuario tiene el siguiente portafolio de inversiones:
+  const prompt=`Eres un analista financiero experto para un usuario en Chile. 
+  PORTAFOLIO: ${portfolioDesc}
+  ${ctx ? `CONTEXTO ADICIONAL: ${ctx}` : ''}
 
-PORTAFOLIO: ${portfolioDesc}
-${totalVal>0?`Valor total estimado: ${fmt(totalVal)} CLP`:''}
-${invData}
-${ctx?`Contexto adicional del usuario: ${ctx}`:''}
+  Por favor proporciona un análisis estructurado con:
+  1. Análisis individual de posiciones (VOO, NVDA, etc).
+  2. Evaluación de riesgo y diversificación.
+  3. Contexto macro y factor Dólar (USD/CLP).
+  4. Recomendaciones concretas.
+  
+  Usa emojis: 🟢 positivo, 🟡 neutral, 🔴 precaución. Sé directo.`;
 
-Por favor proporciona:
-
-1. **Análisis individual de cada posición** — estado actual en el mercado, tendencia reciente, perspectivas a corto y largo plazo
-2. **Evaluación del portafolio** — diversificación, exposición sectorial, balance riesgo/retorno
-3. **Contexto macroeconómico** — qué factores actuales del mercado (tasas Fed, inflación, geopolítica, tech rally, etc.) afectan estas posiciones
-4. **Recomendaciones concretas** — qué mantener, qué revisar, posibles ajustes de pesos
-5. **Perspectiva para el inversionista chileno** — impacto del tipo de cambio CLP/USD, consideraciones de tributación para inversores en Chile
-
-Usa emojis de semáforo: 🟢 positivo, 🟡 neutral/cautela, 🔴 precaución. Sé directo y práctico. Recuerda que el usuario tiene horizonte de largo plazo y está en Chile.`;
-
-  try{
-    const response=await fetch('https://api.anthropic.com/v1/messages',{
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({
-        model:'claude-sonnet-4-20250514',
-        max_tokens:1000,
-        tools:[{type:'web_search_20250305',name:'web_search'}],
-        messages:[{role:'user',content:prompt}]
+  try {
+    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_KEY}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        contents: [{ parts: [{ text: prompt }] }]
       })
     });
-    const data=await response.json();
-    // Extraer texto de los bloques de contenido
-    const textBlocks=data.content?.filter(b=>b.type==='text').map(b=>b.text)||[];
-    const resultText=textBlocks.join('\n').trim();
 
-    if(!resultText){throw new Error('Sin respuesta');}
+    const data = await response.json();
+    if (data.error) throw new Error(data.error.message);
 
-    // Formatear resultado
-    const formatted=resultText
-      .replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>')
-      .replace(/^#{1,3} (.+)$/gm,'<h3>$1</h3>')
-      .replace(/🟢/g,'<span class="tag-bull">🟢</span>')
-      .replace(/🔴/g,'<span class="tag-bear">🔴</span>')
-      .replace(/🟡/g,'<span class="tag-neutral">🟡</span>');
+    const resultText = data.candidates[0].content.parts[0].text;
 
-    wrap.innerHTML=`<div class="card">
+    // Formatear el texto para la interfaz
+    const formatted = resultText
+      .replace(/\n/g, '<br>')
+      .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+      .replace(/🟢/g, '<span class="tag-bull">🟢</span>')
+      .replace(/🔴/g, '<span class="tag-bear">🔴</span>')
+      .replace(/🟡/g, '<span class="tag-neutral">🟡</span>');
+
+    wrap.innerHTML = `<div class="card">
       <div class="card-title" style="display:flex;justify-content:space-between;align-items:center">
-        Análisis IA — ${new Date().toLocaleDateString('es-CL',{day:'2-digit',month:'short',year:'numeric'})}
+        Análisis IA — ${new Date().toLocaleDateString('es-CL')}
         <button class="btn-ghost" onclick="copyAnalysis()" style="font-size:11px">Copiar</button>
       </div>
-      <div class="ai-result" id="ai-result-text">${formatted}</div>
-      <div class="ai-disclaimer">⚠️ Este análisis es generado por IA con fines informativos únicamente. No constituye asesoría financiera profesional. Consulta con un asesor certificado antes de invertir.</div>
+      <div class="ai-result" id="ai-result-text" style="font-size:14px; line-height:1.6;">${formatted}</div>
+      <div class="ai-disclaimer" style="margin-top:15px; font-size:11px; opacity:0.7;">⚠️ Información educativa, no es asesoría financiera.</div>
     </div>`;
 
     // Guardar en historial
-    stockHistory.unshift({date:today(),portfolio:portfolioDesc,analysis:resultText.slice(0,800)+'...'});
-    if(stockHistory.length>5)stockHistory=stockHistory.slice(0,5);
-    save();renderStockHistory();
+    if(typeof stockHistory !== 'undefined'){
+        stockHistory.unshift({date: new Date().toISOString(), portfolio: portfolioDesc, analysis: resultText.slice(0,100) + '...'});
+        if(stockHistory.length > 5) stockHistory = stockHistory.slice(0,5);
+        save();
+        renderStockHistory();
+    }
 
-  }catch(e){
-    wrap.innerHTML=`<div class="card"><div style="color:var(--accent2);font-size:13px">⚠️ Error al obtener el análisis. Verifica tu conexión e intenta de nuevo.<br><small style="color:var(--muted)">${e.message||''}</small></div></div>`;
-  }finally{
-    btn.disabled=false;icon.textContent='🤖';txtEl.textContent='Analizar portafolio con IA';
+  } catch(e) {
+    console.error(e);
+    wrap.innerHTML = `<div class="card"><div style="color:var(--accent2);font-size:13px">⚠️ Error: ${e.message}. Verifica tu conexión.</div></div>`;
+  } finally {
+    btn.disabled = false;
+    if(icon) icon.textContent='🤖';
+    if(txtEl) txtEl.textContent='Analizar portafolio con IA';
   }
 }
 
