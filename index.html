@@ -509,6 +509,7 @@ textarea{resize:vertical;min-height:70px;line-height:1.5;}
     </div>
     <div id="stock-total-bar" style="display:none;margin-bottom:10px"></div>
     <div class="field" style="margin-bottom:10px"><label>Contexto adicional (opcional)</label><textarea id="stock-context" placeholder="Ej: Me preocupa la inflación en EE.UU., tengo horizonte de 5+ años, estoy pensando en agregar NVDA..." rows="2"></textarea></div>
+    <div class="field" style="margin-bottom:10px"><label>API Key de Anthropic <span style="color:var(--muted);font-weight:400;text-transform:none">(requerida)</span></label><input type="password" id="stock-api-key" placeholder="sk-ant-..." autocomplete="off" oninput="localStorage.setItem('fh_apikey',this.value)"/></div>
     <button class="btn-ai" id="btn-analizar" onclick="analizarStocks()">
       <span id="ai-btn-icon">🤖</span> <span id="ai-btn-text">Analizar portafolio con IA</span>
     </button>
@@ -1160,6 +1161,8 @@ function deleteInv(key){
 ════════════════════════════════════ */
 function renderStocksPage(){
   renderStockChips();renderStockHistory();
+  const ki=document.getElementById('stock-api-key');
+  if(ki&&!ki.value){const saved=localStorage.getItem('fh_apikey');if(saved)ki.value=saved;}
 }
 function renderStockChips(){
   const wrap=document.getElementById('stock-chips-wrap');if(!wrap)return;
@@ -1195,6 +1198,8 @@ function addStock(){
 function removeStock(i){stockPortfolio.splice(i,1);save();renderStockChips();}
 
 async function analizarStocks(){
+  const apiKey=(document.getElementById('stock-api-key')?.value||localStorage.getItem('fh_apikey')||'').trim();
+  if(!apiKey){toast('⚠️ Ingresa tu API Key de Anthropic primero');return;}
   if(!stockPortfolio.length){toast('⚠️ Agrega al menos un stock primero');return;}
   const btn=document.getElementById('btn-analizar');
   const icon=document.getElementById('ai-btn-icon');const txtEl=document.getElementById('ai-btn-text');
@@ -1227,17 +1232,26 @@ Usa emojis de semáforo: 🟢 positivo, 🟡 neutral/cautela, 🔴 precaución. 
   try{
     const response=await fetch('https://api.anthropic.com/v1/messages',{
       method:'POST',
-      headers:{'Content-Type':'application/json'},
+      headers:{
+        'Content-Type':'application/json',
+        'x-api-key': apiKey,
+        'anthropic-version':'2023-06-01',
+        'anthropic-dangerous-direct-browser-access':'true'
+      },
       body:JSON.stringify({
         model:'claude-sonnet-4-20250514',
-        max_tokens:1000,
+        max_tokens:1500,
         tools:[{type:'web_search_20250305',name:'web_search'}],
         messages:[{role:'user',content:prompt}]
       })
     });
+    if(!response.ok){
+      const err=await response.json().catch(()=>({}));
+      throw new Error(err?.error?.message||`HTTP ${response.status}`);
+    }
     const data=await response.json();
-    // Extraer texto de los bloques de contenido
-    const textBlocks=data.content?.filter(b=>b.type==='text').map(b=>b.text)||[];
+    // Extraer texto de todos los bloques de contenido (incluyendo después de tool_use)
+    const textBlocks=(data.content||[]).filter(b=>b.type==='text').map(b=>b.text);
     const resultText=textBlocks.join('\n').trim();
 
     if(!resultText){throw new Error('Sin respuesta');}
