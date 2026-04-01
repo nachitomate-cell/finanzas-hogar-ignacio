@@ -223,12 +223,25 @@ textarea{resize:vertical;min-height:70px;line-height:1.5;}
 .stock-chips{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:12px;}
 .stock-remove{background:transparent;border:none;color:var(--muted2);cursor:pointer;font-size:14px;padding:0;line-height:1;}
 .stock-remove:hover{color:var(--accent2);}
-.ai-result{background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);padding:18px;margin-top:13px;font-size:14px;line-height:1.7;color:var(--text);white-space:pre-wrap;}
-.ai-result h3{font-family:var(--serif);font-size:16px;margin-bottom:6px;color:var(--accent5);}
+.ai-result{font-size:14px;line-height:1.75;color:var(--text);}
+.ai-result h3{font-family:var(--serif);font-size:17px;margin:18px 0 8px;color:var(--accent5);border-bottom:1px solid rgba(167,139,250,.2);padding-bottom:5px;}
+.ai-result h3:first-child{margin-top:0;}
+.ai-result .ai-section{background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);padding:14px 16px;margin-bottom:10px;}
+.ai-result .ai-section-title{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:8px;display:flex;align-items:center;gap:6px;}
+.ai-result .ai-bullet{display:flex;gap:8px;margin-bottom:5px;font-size:13px;align-items:flex-start;}
+.ai-result .ai-bullet::before{content:'›';color:var(--accent5);flex-shrink:0;margin-top:1px;}
+.ai-result strong{color:var(--text);font-weight:600;}
+.ai-result .tag-bull{color:var(--accent);font-weight:700;font-size:15px;}
+.ai-result .tag-bear{color:var(--accent2);font-weight:700;font-size:15px;}
+.ai-result .tag-neutral{color:var(--accent3);font-weight:700;font-size:15px;}
 .ai-result .stock-badge{display:inline-block;background:rgba(167,139,250,.15);color:var(--accent5);border:1px solid rgba(167,139,250,.25);border-radius:20px;padding:1px 8px;font-size:11px;font-weight:600;margin-right:4px;}
-.ai-result .tag-bull{color:var(--accent);font-weight:600;}
-.ai-result .tag-bear{color:var(--accent2);font-weight:600;}
-.ai-result .tag-neutral{color:var(--accent3);font-weight:600;}
+.ai-summary-bar{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:8px;margin-bottom:14px;}
+.ai-summary-card{background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px 12px;text-align:center;}
+.ai-summary-card .ais-label{font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;margin-bottom:4px;}
+.ai-summary-card .ais-val{font-size:22px;line-height:1;}
+.ai-summary-card .ais-sub{font-size:10px;color:var(--muted);margin-top:2px;}
+.ai-portfolio-chart{margin-bottom:14px;}
+.ai-portfolio-chart canvas{width:100%!important;}
 .ai-spinner{display:inline-block;width:14px;height:14px;border:2px solid rgba(167,139,250,.3);border-top-color:var(--accent5);border-radius:50%;animation:spin .8s linear infinite;}
 @keyframes spin{to{transform:rotate(360deg);}}
 .ai-disclaimer{font-size:11px;color:var(--muted);margin-top:10px;font-style:italic;}
@@ -1236,7 +1249,7 @@ Usa emojis de semáforo: 🟢 positivo, 🟡 neutral/cautela, 🔴 precaución. 
       'meta-llama/llama-4-maverick:free',
       'meta-llama/llama-3.3-70b-instruct:free',
       'deepseek/deepseek-chat-v3-0324:free',
-      'openrouter/auto'
+      'qwen/qwen3-235b-a22b:free'
     ];
     let resultText='';
     let lastError='';
@@ -1260,24 +1273,73 @@ Usa emojis de semáforo: 🟢 positivo, 🟡 neutral/cautela, 🔴 precaución. 
     }
     if(!resultText){throw new Error(lastError||'Sin respuesta de todos los modelos');}
 
-    if(!resultText){throw new Error('Sin respuesta');}
+    // ── Gráfico de torta del portafolio ──
+    const CHART_COLORS=['#a78bfa','#4ade9a','#60a5fa','#facc5f','#f97060','#22d3ee','#f472b6','#fb923c'];
+    const pieLabels=stockPortfolio.map(s=>s.ticker);
+    const pieData=stockPortfolio.map(s=>s.pct);
+    const pieColors=stockPortfolio.map((_,i)=>CHART_COLORS[i%CHART_COLORS.length]);
 
-    // Formatear resultado
+    // ── Extraer semáforo general del resumen ejecutivo ──
+    const execMatch=resultText.match(/RESUMEN EJECUTIVO[\s\S]*?(🟢|🟡|🔴)/);
+    const globalSignal=execMatch?execMatch[1]:'🟡';
+    const signalLabel={'🟢':'Portafolio Sólido','🟡':'Cautela Moderada','🔴':'Revisar Posiciones'};
+    const signalColor={'🟢':'var(--accent)','🟡':'var(--accent3)','🔴':'var(--accent2)'};
+
+    // ── Formatear markdown a HTML ──
     const formatted=resultText
+      .replace(/## (.+)/g,'<h3>$1</h3>')
       .replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>')
-      .replace(/^#{1,3} (.+)$/gm,'<h3>$1</h3>')
+      .replace(/^[-•*] (.+)$/gm,'<div class="ai-bullet"><span>$1</span></div>')
+      .replace(/^(\d+\. .+)$/gm,'<div class="ai-bullet"><span>$1</span></div>')
       .replace(/🟢/g,'<span class="tag-bull">🟢</span>')
       .replace(/🔴/g,'<span class="tag-bear">🔴</span>')
       .replace(/🟡/g,'<span class="tag-neutral">🟡</span>');
 
+    const totalPctVal=stockPortfolio.reduce((s,x)=>s+(x.val||0),0);
+
     wrap.innerHTML=`<div class="card">
-      <div class="card-title" style="display:flex;justify-content:space-between;align-items:center">
-        Análisis IA — ${new Date().toLocaleDateString('es-CL',{day:'2-digit',month:'short',year:'numeric'})}
-        <button class="btn-ghost" onclick="copyAnalysis()" style="font-size:11px">Copiar</button>
+      <div class="card-title" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px">
+        <span>🤖 Análisis IA — ${new Date().toLocaleDateString('es-CL',{day:'2-digit',month:'short',year:'numeric'})}</span>
+        <div style="display:flex;gap:6px">
+          <span style="font-size:13px;padding:3px 10px;border-radius:20px;background:rgba(74,222,154,.1);border:1px solid rgba(74,222,154,.2);color:${signalColor[globalSignal]};font-weight:600">${globalSignal} ${signalLabel[globalSignal]||'Análisis Listo'}</span>
+          <button class="btn-ghost" onclick="copyAnalysis()" style="font-size:11px">📋 Copiar</button>
+        </div>
       </div>
+
+      <div class="ai-summary-bar">
+        <div class="ai-summary-card"><div class="ais-label">Posiciones</div><div class="ais-val">${stockPortfolio.length}</div><div class="ais-sub">activos</div></div>
+        ${totalPctVal>0?`<div class="ai-summary-card"><div class="ais-label">Valor total</div><div class="ais-val" style="font-size:15px;font-weight:600;color:var(--accent5)">${fmt(totalPctVal)}</div><div class="ais-sub">CLP</div></div>`:''}
+        <div class="ai-summary-card"><div class="ais-label">Mayor peso</div><div class="ais-val" style="font-size:15px;font-weight:600">${stockPortfolio.sort((a,b)=>b.pct-a.pct)[0]?.ticker||'—'}</div><div class="ais-sub">${stockPortfolio[0]?.pct||0}%</div></div>
+        <div class="ai-summary-card"><div class="ais-label">Señal global</div><div class="ais-val">${globalSignal}</div><div class="ais-sub">${signalLabel[globalSignal]||''}</div></div>
+      </div>
+
+      <div class="ai-portfolio-chart">
+        <div class="card-title" style="margin-bottom:8px">Distribución del portafolio</div>
+        <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap">
+          <div style="position:relative;width:130px;height:130px;flex-shrink:0"><canvas id="ai-pie-chart" width="130" height="130"></canvas></div>
+          <div style="display:flex;flex-direction:column;gap:5px;flex:1;min-width:120px">
+            ${stockPortfolio.map((s,i)=>`<div style="display:flex;align-items:center;gap:7px;font-size:12px">
+              <div style="width:8px;height:8px;border-radius:50%;background:${CHART_COLORS[i%CHART_COLORS.length]};flex-shrink:0"></div>
+              <span style="font-weight:600;color:var(--text);min-width:45px">${s.ticker}</span>
+              <span style="color:var(--muted)">${s.pct}%</span>
+              ${s.val?`<span style="color:var(--muted2);font-size:11px">${fmt(s.val)}</span>`:''}
+            </div>`).join('')}
+          </div>
+        </div>
+      </div>
+
       <div class="ai-result" id="ai-result-text">${formatted}</div>
-      <div class="ai-disclaimer">⚠️ Este análisis es generado por IA con fines informativos únicamente. No constituye asesoría financiera profesional. Consulta con un asesor certificado antes de invertir.</div>
+      <div class="ai-disclaimer">⚠️ Generado por IA — solo informativo. No constituye asesoría financiera. Consulta un asesor certificado antes de invertir.</div>
     </div>`;
+
+    // Renderizar gráfico de torta
+    setTimeout(()=>{
+      const ctx=document.getElementById('ai-pie-chart');
+      if(ctx&&window.Chart){
+        new Chart(ctx,{type:'doughnut',data:{labels:pieLabels,datasets:[{data:pieData,backgroundColor:pieColors,borderWidth:0,hoverOffset:4}]},
+          options:{responsive:false,cutout:'60%',plugins:{legend:{display:false},tooltip:{callbacks:{label:i=>`${i.label}: ${i.raw}%`}}}}});
+      }
+    },100);
 
     // Guardar en historial
     stockHistory.unshift({date:today(),portfolio:portfolioDesc,analysis:resultText.slice(0,800)+'...'});
