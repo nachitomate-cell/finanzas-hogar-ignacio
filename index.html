@@ -287,16 +287,153 @@ textarea{resize:vertical;min-height:70px;line-height:1.5;}
   .grid-32{grid-template-columns:1fr;}
   .main{padding:20px 18px;}
 }
+
+/* ── ONBOARDING ── */
+.onboarding-overlay{position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:500;display:flex;align-items:center;justify-content:center;padding:20px;}
+.onboarding-box{background:var(--bg2);border:1px solid var(--border2);border-radius:var(--radius);width:100%;max-width:420px;overflow:hidden;}
+.ob-step{display:none;padding:28px 24px 22px;}.ob-step.active{display:block;}
+.ob-emoji{font-size:40px;margin-bottom:10px;}
+.ob-title{font-family:var(--serif);font-size:22px;margin-bottom:6px;}
+.ob-sub{font-size:13px;color:var(--muted);line-height:1.6;margin-bottom:18px;}
+.ob-dots{display:flex;gap:6px;justify-content:center;margin-bottom:16px;}
+.ob-dot{width:7px;height:7px;border-radius:50%;background:var(--bg4);transition:background .2s;}
+.ob-dot.active{background:var(--accent);}
+.ob-btns{display:flex;gap:8px;}
+.ob-btns .btn{flex:1;}
+.ob-skip{background:transparent;border:none;color:var(--muted);font-size:12px;cursor:pointer;padding:8px;text-align:center;width:100%;}
+
+/* ── SETTINGS MODAL ── */
+.settings-overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:300;display:flex;align-items:flex-end;justify-content:center;opacity:0;pointer-events:none;transition:opacity .2s;}
+.settings-overlay.open{opacity:1;pointer-events:all;}
+.settings-modal{background:var(--bg2);border:1px solid var(--border2);border-radius:var(--radius) var(--radius) 0 0;padding:22px 18px calc(18px + var(--safe-bot));width:100%;max-width:500px;transform:translateY(60px);transition:transform .25s cubic-bezier(.4,0,.2,1);}
+.settings-overlay.open .settings-modal{transform:translateY(0);}
+.settings-title{font-family:var(--serif);font-size:19px;margin-bottom:16px;display:flex;align-items:center;justify-content:space-between;}
+.settings-close{background:transparent;border:none;color:var(--muted);font-size:20px;cursor:pointer;line-height:1;}
+.settings-row{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border);}
+.settings-row:last-child{border-bottom:none;}
+.settings-label{font-size:13px;font-weight:500;}
+.settings-sub{font-size:11px;color:var(--muted);margin-top:2px;}
+.settings-key-wrap{margin-top:12px;}
+
+/* ── QUICK CATS (movimientos móvil) ── */
+.quick-cats{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px;}
+.quick-cat-btn{background:var(--bg3);border:1px solid var(--border);border-radius:20px;color:var(--muted);font-size:11px;padding:4px 10px;cursor:pointer;transition:all .15s;white-space:nowrap;}
+.quick-cat-btn.active{background:rgba(74,222,154,.12);border-color:rgba(74,222,154,.3);color:var(--accent);}
+
+/* ── METAS DE AHORRO ── */
+.meta-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:16px;margin-bottom:10px;position:relative;overflow:hidden;}
+.meta-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--meta-color,var(--accent));}
+.meta-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:10px;gap:8px;}
+.meta-emoji{font-size:22px;flex-shrink:0;}
+.meta-info{flex:1;}
+.meta-name{font-size:14px;font-weight:600;}
+.meta-dates{font-size:11px;color:var(--muted);margin-top:2px;}
+.meta-amount{text-align:right;flex-shrink:0;}
+.meta-current{font-size:15px;font-weight:600;color:var(--accent);}
+.meta-target{font-size:11px;color:var(--muted);}
+.meta-pbar{height:6px;background:var(--bg4);border-radius:3px;overflow:hidden;margin-bottom:6px;}
+.meta-pbar-fill{height:100%;border-radius:3px;transition:width .6s cubic-bezier(.4,0,.2,1);}
+.meta-footer{display:flex;justify-content:space-between;align-items:center;font-size:11px;color:var(--muted);}
+.meta-forecast{color:var(--accent3);font-weight:500;}
+
+/* ── ALERTAS PRESUPUESTO ── */
+.alert-badge{display:inline-flex;align-items:center;gap:4px;font-size:10px;padding:2px 7px;border-radius:20px;font-weight:600;}
+.alert-warn{background:rgba(250,204,95,.12);color:var(--accent3);border:1px solid rgba(250,204,95,.25);}
+.alert-danger{background:rgba(249,112,96,.12);color:var(--accent2);border:1px solid rgba(249,112,96,.25);}
+.budget-alerts-wrap{margin-bottom:13px;}
+.budget-alert-item{display:flex;align-items:center;gap:8px;padding:8px 12px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-sm);margin-bottom:6px;font-size:12px;}
+
+/* ── RESPALDO / DATA SAFETY ── */
+.data-safety-bar{background:rgba(249,112,96,.06);border:1px solid rgba(249,112,96,.18);border-radius:var(--radius);padding:10px 14px;margin-bottom:13px;display:flex;align-items:center;gap:10px;font-size:12px;color:var(--muted);}
+.data-safety-bar strong{color:var(--accent2);}
+
+/* ── BENCHMARK COMPARISON ── */
+.bench-row{display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);font-size:13px;}
+.bench-row:last-child{border-bottom:none;}
+.bench-tag{display:inline-block;font-size:10px;padding:1px 7px;border-radius:20px;font-weight:600;margin-left:6px;}
+.bench-up{background:rgba(74,222,154,.12);color:var(--accent);border:1px solid rgba(74,222,154,.2);}
+.bench-down{background:rgba(249,112,96,.12);color:var(--accent2);border:1px solid rgba(249,112,96,.2);}
+
+/* ── SETTINGS GEAR BUTTON ── */
+.settings-btn{background:transparent;border:1px solid var(--border2);border-radius:var(--radius-sm);color:var(--muted);font-size:15px;padding:4px 8px;cursor:pointer;line-height:1;}
+.settings-btn:hover{color:var(--text);}
 </style>
 </head>
 <body>
+
+<!-- ══ ONBOARDING ══ -->
+<div class="onboarding-overlay" id="onboarding-overlay" style="display:none">
+  <div class="onboarding-box">
+    <div class="ob-step active" id="ob-step-0">
+      <div class="ob-emoji">💰</div>
+      <div class="ob-title">Bienvenido a Finanzas Hogar</div>
+      <div class="ob-sub">Tu panel de control financiero personal. Todo se guarda localmente en tu dispositivo — sin cuentas, sin servidores.</div>
+      <div class="ob-dots"><div class="ob-dot active"></div><div class="ob-dot"></div><div class="ob-dot"></div><div class="ob-dot"></div></div>
+      <div class="ob-btns"><button class="btn" onclick="obNext()">Empezar →</button></div>
+      <button class="ob-skip" onclick="obSkip()">Saltar introducción</button>
+    </div>
+    <div class="ob-step" id="ob-step-1">
+      <div class="ob-emoji">📊</div>
+      <div class="ob-title">Registra tus movimientos</div>
+      <div class="ob-sub">Ingresa ingresos, gastos y transferencias. Usa <strong>Transferencia/Inversión</strong> para aportes a Racional — no cuenta como gasto.</div>
+      <div class="ob-dots"><div class="ob-dot"></div><div class="ob-dot active"></div><div class="ob-dot"></div><div class="ob-dot"></div></div>
+      <div class="ob-btns"><button class="btn-ghost" onclick="obPrev()">← Atrás</button><button class="btn" onclick="obNext()">Siguiente →</button></div>
+    </div>
+    <div class="ob-step" id="ob-step-2">
+      <div class="ob-emoji">🎯</div>
+      <div class="ob-title">Crea metas de ahorro</div>
+      <div class="ob-sub">Define objetivos como "Viaje a Europa $2.000.000" y la app proyectará cuándo los alcanzarás según tu ritmo de ahorro actual.</div>
+      <div class="ob-dots"><div class="ob-dot"></div><div class="ob-dot"></div><div class="ob-dot active"></div><div class="ob-dot"></div></div>
+      <div class="ob-btns"><button class="btn-ghost" onclick="obPrev()">← Atrás</button><button class="btn" onclick="obNext()">Siguiente →</button></div>
+    </div>
+    <div class="ob-step" id="ob-step-3">
+      <div class="ob-emoji">💾</div>
+      <div class="ob-title">Haz respaldo periódico</div>
+      <div class="ob-sub">Los datos viven en este navegador. Si limpias el caché, <strong>pierdes todo</strong>. Exporta un respaldo JSON regularmente desde Movimientos → 💾</div>
+      <div class="ob-dots"><div class="ob-dot"></div><div class="ob-dot"></div><div class="ob-dot"></div><div class="ob-dot active"></div></div>
+      <div class="ob-btns"><button class="btn-ghost" onclick="obPrev()">← Atrás</button><button class="btn" onclick="obFinish()">¡Comenzar! 🚀</button></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ SETTINGS MODAL ══ -->
+<div class="settings-overlay" id="settings-overlay" onclick="closeSettings(event)">
+  <div class="settings-modal">
+    <div class="settings-title">⚙️ Configuración <button class="settings-close" onclick="closeSettings()">×</button></div>
+    <div class="settings-row">
+      <div><div class="settings-label">Modo oscuro/claro</div><div class="settings-sub">Cambia la apariencia visual</div></div>
+      <label class="toggle"><input type="checkbox" id="theme-toggle-settings" onchange="toggleTheme()"/><span class="toggle-slider"></span></label>
+    </div>
+    <div class="settings-row">
+      <div><div class="settings-label">Alertas de presupuesto</div><div class="settings-sub">Avisar cuando superas el 80%</div></div>
+      <label class="toggle"><input type="checkbox" id="alerts-toggle" checked onchange="localStorage.setItem('fh_alerts',this.checked?'1':'0')"/><span class="toggle-slider"></span></label>
+    </div>
+    <div class="settings-row">
+      <div><div class="settings-label">Respaldo automático</div><div class="settings-sub">Recordatorio mensual de exportar</div></div>
+      <label class="toggle"><input type="checkbox" id="backup-toggle" checked onchange="localStorage.setItem('fh_backup_remind',this.checked?'1':'0')"/><span class="toggle-slider"></span></label>
+    </div>
+    <div class="settings-key-wrap">
+      <div class="field">
+        <label>API Key de OpenRouter <span style="color:var(--muted);font-weight:400;text-transform:none">(gratuita — <a href="https://openrouter.ai/keys" target="_blank" style="color:var(--accent4)">obtener aquí</a>)</span></label>
+        <input type="password" id="settings-api-key" placeholder="sk-or-v1-..." autocomplete="off" oninput="saveApiKey(this.value)"/>
+      </div>
+      <div style="font-size:11px;color:var(--muted);margin-top:5px">La key se guarda localmente. Nunca se envía a nuestros servidores.</div>
+    </div>
+    <div style="margin-top:14px;display:flex;gap:8px;flex-wrap:wrap">
+      <button class="btn-ghost" onclick="exportJSON();closeSettings()" style="flex:1">💾 Exportar respaldo</button>
+      <button class="btn-ghost" onclick="importJSON();closeSettings()" style="flex:1">📂 Importar respaldo</button>
+    </div>
+    <button class="btn-danger" onclick="confirmResetAll()" style="width:100%;margin-top:8px;font-size:12px">🗑️ Borrar todos los datos</button>
+  </div>
+</div>
+
 <div class="app">
 
 <header class="topbar">
   <div class="topbar-brand">Finanzas <span>Hogar</span></div>
   <div class="topbar-right">
     <div class="topbar-month" id="topbar-month"></div>
-    <button class="theme-btn" onclick="toggleTheme()" id="theme-btn-top">☀️</button>
+    <button class="settings-btn" onclick="openSettings()">⚙️</button><button class="theme-btn" onclick="toggleTheme()" id="theme-btn-top">☀️</button>
   </div>
 </header>
 
@@ -319,12 +456,13 @@ textarea{resize:vertical;min-height:70px;line-height:1.5;}
     <button class="nav-item" data-page="anual"><span class="nav-icon">📅</span>Resumen Anual</button>
     <div class="nav-sep"></div>
     <button class="nav-item" data-page="inversiones"><span class="nav-icon">📈</span>Racional</button>
+    <button class="nav-item" data-page="metas"><span class="nav-icon">🎯</span>Metas de Ahorro</button>
     <button class="nav-item" data-page="stocks"><span class="nav-icon">🤖</span>Análisis IA Stocks</button>
     <div class="nav-sep"></div>
     <button class="nav-item" data-page="recurrentes"><span class="nav-icon">🔁</span>Gastos Fijos</button>
     <button class="nav-item" data-page="categorias"><span class="nav-icon">🏷️</span>Categorías</button>
   </nav>
-  <div class="sidebar-footer"><div class="month-badge" id="sidebar-month"></div><div>Datos locales · v5</div></div>
+  <div class="sidebar-footer"><div class="month-badge" id="sidebar-month"></div><div style="display:flex;justify-content:space-between;align-items:center"><span>Datos locales · v6</span><button class="settings-btn" onclick="openSettings()" style="font-size:12px">⚙️</button></div></div>
 </aside>
 
 <main class="main" id="main-scroll">
@@ -381,7 +519,7 @@ textarea{resize:vertical;min-height:70px;line-height:1.5;}
     <div class="form-stack">
       <div class="field"><label>Descripción</label><input type="text" id="f-desc" placeholder="Ej: Aporte Racional VOO"/></div>
       <div class="form-row">
-        <div class="field"><label>Categoría</label><select id="f-cat"></select></div>
+        <div class="field"><label>Categoría</label><div class="quick-cats" id="quick-cats-bar"></div><select id="f-cat"></select></div>
         <div class="field"><label>Tipo</label>
           <select id="f-tipo">
             <option value="gasto">Gasto</option>
@@ -522,15 +660,54 @@ textarea{resize:vertical;min-height:70px;line-height:1.5;}
     </div>
     <div id="stock-total-bar" style="display:none;margin-bottom:10px"></div>
     <div class="field" style="margin-bottom:10px"><label>Contexto adicional (opcional)</label><textarea id="stock-context" placeholder="Ej: Me preocupa la inflación en EE.UU., tengo horizonte de 5+ años, estoy pensando en agregar NVDA..." rows="2"></textarea></div>
-    <div class="field" style="margin-bottom:10px"><label>API Key de OpenRouter <span style="color:var(--muted);font-weight:400;text-transform:none">(gratuita — <a href="https://openrouter.ai/keys" target="_blank" style="color:var(--accent4)">obtener aquí</a>)</span></label><input type="password" id="stock-api-key" placeholder="sk-or-v1-..." autocomplete="off" oninput="localStorage.setItem('fh_apikey',this.value)"/></div>
+    <div id="stock-api-hint" style="display:none;margin-bottom:10px"><div class="info-box" style="cursor:pointer" onclick="openSettings()"><span>🔑</span><span>Necesitas configurar tu API Key de OpenRouter. <strong style="color:var(--accent4)">Abrir configuración →</strong></span></div></div>
     <button class="btn-ai" id="btn-analizar" onclick="analizarStocks()">
       <span id="ai-btn-icon">🤖</span> <span id="ai-btn-text">Analizar portafolio con IA</span>
     </button>
   </div>
   <div id="ai-result-wrap"></div>
+  <div id="benchmark-wrap"></div>
   <div class="card" id="stock-history-card" style="display:none">
     <div class="card-title">Análisis anteriores</div>
     <div id="stock-history-list"></div>
+  </div>
+</div>
+
+
+<!-- ══ METAS DE AHORRO ══ -->
+<div class="page" id="page-metas">
+  <div class="page-header"><div class="page-header-left"><div class="page-title">Metas de Ahorro</div><div class="page-sub">Define objetivos y proyecta cuándo los alcanzarás</div></div></div>
+  <div id="budget-alerts-section" class="budget-alerts-wrap" style="display:none"></div>
+  <div class="card">
+    <div class="card-title">Nueva meta</div>
+    <div class="form-stack">
+      <div class="form-row">
+        <div class="field"><label>Nombre</label><input type="text" id="meta-nombre" placeholder="Ej: Viaje a Europa"/></div>
+        <div class="field"><label>Emoji</label><input type="text" id="meta-icon" placeholder="✈️" maxlength="2" style="font-size:20px;text-align:center"/></div>
+      </div>
+      <div class="form-row">
+        <div class="field"><label>Monto objetivo ($CLP)</label><input type="number" id="meta-objetivo" placeholder="2000000" min="0" inputmode="numeric"/></div>
+        <div class="field"><label>Ahorro mensual asignado ($)</label><input type="number" id="meta-mensual" placeholder="150000" min="0" inputmode="numeric"/></div>
+      </div>
+      <div class="form-row">
+        <div class="field"><label>Ya tengo ahorrado ($)</label><input type="number" id="meta-actual" placeholder="0" min="0" inputmode="numeric"/></div>
+        <div class="field"><label>Color</label>
+          <select id="meta-color">
+            <option value="#4ade9a">🟢 Verde</option>
+            <option value="#60a5fa">🔵 Azul</option>
+            <option value="#a78bfa">🟣 Violeta</option>
+            <option value="#facc5f">🟡 Amarillo</option>
+            <option value="#f97060">🔴 Rojo</option>
+            <option value="#22d3ee">🩵 Cyan</option>
+          </select>
+        </div>
+      </div>
+      <button class="btn" onclick="addMeta()">+ Agregar meta</button>
+    </div>
+  </div>
+  <div id="metas-list"></div>
+  <div class="card" id="metas-empty-card" style="display:none">
+    <div class="empty">🎯 Aún no tienes metas. ¡Crea una arriba!</div>
   </div>
 </div>
 
@@ -579,7 +756,7 @@ textarea{resize:vertical;min-height:70px;line-height:1.5;}
   <div class="bottom-nav-inner">
     <button class="bnav-item active" data-page="resumen"><span class="bnav-icon">◈</span><span>Inicio</span></button>
     <button class="bnav-item" data-page="movimientos"><span class="bnav-icon">＋</span><span>Agregar</span></button>
-    <button class="bnav-item" data-page="stocks"><span class="bnav-icon">🤖</span><span>IA Stocks</span></button>
+    <button class="bnav-item" data-page="metas"><span class="bnav-icon">🎯</span><span>Metas</span></button>
     <button class="bnav-item" data-page="inversiones"><span class="bnav-icon">📈</span><span>Racional</span></button>
     <button class="bnav-item" data-page="anual"><span class="bnav-icon">📅</span><span>Anual</span></button>
   </div>
@@ -764,6 +941,7 @@ function renderPage(n){
   if(n==='anual')       renderAnual();
   if(n==='inversiones') renderInversiones();
   if(n==='stocks')      renderStocksPage();
+  if(n==='metas')       renderMetas();
   if(n==='recurrentes') renderGastosFijos();
   if(n==='categorias')  renderCategorias();
 }
@@ -1211,7 +1389,7 @@ function addStock(){
 function removeStock(i){stockPortfolio.splice(i,1);save();renderStockChips();}
 
 async function analizarStocks(){
-  const apiKey=(document.getElementById('stock-api-key')?.value||localStorage.getItem('fh_apikey')).trim();
+  const apiKey=(localStorage.getItem('fh_apikey')||'').trim();
   if(!apiKey){toast('⚠️ Ingresa tu API Key de OpenRouter primero');return;}
   if(!stockPortfolio.length){toast('⚠️ Agrega al menos un stock primero');return;}
   const btn=document.getElementById('btn-analizar');
@@ -1513,7 +1691,252 @@ if('serviceWorker' in navigator){
   if(bcat){const cats=allCats().filter(c=>c.id!=='Ingreso'&&c.id!=='Racional');bcat.innerHTML=cats.map(c=>`<option value="${c.id}">${c.emoji} ${c.id}</option>`).join('');}
   aplicarGastosFijos(false);
   renderResumen();
+  renderQuickCats();
+  checkOnboarding();
+  checkBackupReminder();
+  if(!localStorage.getItem('fh_last_backup'))localStorage.setItem('fh_last_backup',Date.now().toString());
 })();
+
+/* ════════════════════════════════════
+   ONBOARDING
+════════════════════════════════════ */
+let obCurrentStep=0;
+function obShowStep(n){
+  document.querySelectorAll('.ob-step').forEach((s,i)=>s.classList.toggle('active',i===n));
+  obCurrentStep=n;
+}
+function obNext(){obShowStep(obCurrentStep+1);}
+function obPrev(){obShowStep(obCurrentStep-1);}
+function obFinish(){
+  document.getElementById('onboarding-overlay').style.display='none';
+  localStorage.setItem('fh_onboarded','1');
+  showPage('resumen');
+}
+function obSkip(){obFinish();}
+function checkOnboarding(){
+  if(!localStorage.getItem('fh_onboarded')){
+    document.getElementById('onboarding-overlay').style.display='flex';
+  }
+}
+
+/* ════════════════════════════════════
+   SETTINGS MODAL
+════════════════════════════════════ */
+function openSettings(){
+  const ov=document.getElementById('settings-overlay');
+  ov.classList.add('open');
+  const ki=document.getElementById('settings-api-key');
+  if(ki){ki.value=localStorage.getItem('fh_apikey')||'';}
+  const tt=document.getElementById('theme-toggle-settings');
+  if(tt){tt.checked=document.body.classList.contains('light');}
+  const at=document.getElementById('alerts-toggle');
+  if(at){at.checked=localStorage.getItem('fh_alerts')!=='0';}
+  const bt=document.getElementById('backup-toggle');
+  if(bt){bt.checked=localStorage.getItem('fh_backup_remind')!=='0';}
+}
+function closeSettings(e){
+  if(e&&e.target!==document.getElementById('settings-overlay'))return;
+  document.getElementById('settings-overlay').classList.remove('open');
+}
+function saveApiKey(v){
+  localStorage.setItem('fh_apikey',v);
+  const sk=document.getElementById('stock-api-key');
+  if(sk)sk.value=v;
+}
+function confirmResetAll(){
+  confirmDialog('¿Borrar TODOS los datos?','Esta acción es irreversible. Se perderán todos tus movimientos, presupuestos, metas e inversiones.',()=>{
+    ['fh_txs','fh_budgets','fh_inv','fh_gf','fh_cats','fh_stocks','fh_stock_hist','fh_saldo','fh_metas','fh_apikey','fh_onboarded'].forEach(k=>localStorage.removeItem(k));
+    location.reload();
+  });
+}
+
+/* ════════════════════════════════════
+   METAS DE AHORRO
+════════════════════════════════════ */
+let metas=JSON.parse(localStorage.getItem('fh_metas')||'null')||[];
+
+function saveMetas(){localStorage.setItem('fh_metas',JSON.stringify(metas));}
+
+function addMeta(){
+  const nombre=document.getElementById('meta-nombre').value.trim();
+  const icon=document.getElementById('meta-icon').value.trim()||'🎯';
+  const objetivo=parseFloat(document.getElementById('meta-objetivo').value)||0;
+  const mensual=parseFloat(document.getElementById('meta-mensual').value)||0;
+  const actual=parseFloat(document.getElementById('meta-actual').value)||0;
+  const color=document.getElementById('meta-color').value||'#4ade9a';
+  if(!nombre){toast('⚠️ Escribe un nombre');return;}
+  if(objetivo<=0){toast('⚠️ Ingresa el monto objetivo');return;}
+  metas.push({id:Date.now(),nombre,icon,objetivo,mensual,actual,color,creado:today()});
+  saveMetas();
+  document.getElementById('meta-nombre').value='';
+  document.getElementById('meta-icon').value='';
+  document.getElementById('meta-objetivo').value='';
+  document.getElementById('meta-mensual').value='';
+  document.getElementById('meta-actual').value='';
+  renderMetas();
+  toast('✓ Meta creada');
+}
+
+function deleteMeta(id){
+  confirmDialog('¿Eliminar meta?','Se perderá el progreso guardado.',()=>{
+    metas=metas.filter(m=>m.id!==id);saveMetas();renderMetas();toast('Meta eliminada');
+  });
+}
+
+function updateMetaActual(id,val){
+  const m=metas.find(x=>x.id===id);
+  if(!m)return;
+  m.actual=parseFloat(val)||0;
+  saveMetas();renderMetas();
+}
+
+function renderMetas(){
+  const list=document.getElementById('metas-list');
+  const empty=document.getElementById('metas-empty-card');
+  const alertsSection=document.getElementById('budget-alerts-section');
+  if(!list)return;
+
+  // ── Alertas de presupuesto ──
+  if(localStorage.getItem('fh_alerts')!=='0'){
+    const real=catTotalsFor(viewMonth,viewYear);
+    const alerts=Object.entries(budgets).filter(([cat,lim])=>lim>0&&(real[cat]||0)/lim>=0.8);
+    if(alerts.length&&alertsSection){
+      alertsSection.style.display='block';
+      alertsSection.innerHTML='<div style="font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;margin-bottom:6px">⚠️ Alertas de presupuesto</div>'+
+        alerts.map(([cat,lim])=>{
+          const used=real[cat]||0;const pct=Math.round(used/lim*100);
+          const over=pct>=100;
+          return `<div class="budget-alert-item">
+            <span style="font-size:16px">${catEmoji(cat)}</span>
+            <span style="flex:1"><strong>${cat}</strong> — ${fmt(used)} de ${fmt(lim)}</span>
+            <span class="alert-badge ${over?'alert-danger':'alert-warn'}">${pct}% ${over?'⛔':'⚠️'}</span>
+          </div>`;
+        }).join('');
+    } else if(alertsSection) alertsSection.style.display='none';
+  }
+
+  // ── Metas cards ──
+  if(!metas.length){list.innerHTML='';if(empty)empty.style.display='block';return;}
+  if(empty)empty.style.display='none';
+
+  // Tasa de ahorro promedio últimos 3 meses para proyección
+  let sumAhorro=0,cntMeses=0;
+  for(let i=1;i<=3;i++){
+    const mo=(CUR_MONTH-i+12)%12,yr=CUR_YEAR-(CUR_MONTH-i<0?1:0);
+    const {ahorro}=calcForMonth(mo,yr);
+    if(ahorro>0){sumAhorro+=ahorro;cntMeses++;}
+  }
+  const tasaMensual=cntMeses>0?sumAhorro/cntMeses:0;
+
+  list.innerHTML=metas.map(m=>{
+    const pct=m.objetivo>0?Math.min(100,Math.round(m.actual/m.objetivo*100)):0;
+    const falta=Math.max(0,m.objetivo-m.actual);
+    const aporteEfectivo=m.mensual||tasaMensual;
+    let forecastText='';
+    if(falta<=0){
+      forecastText='🎉 ¡Meta alcanzada!';
+    } else if(aporteEfectivo>0){
+      const mesesRestantes=Math.ceil(falta/aporteEfectivo);
+      const fechaMeta=new Date();fechaMeta.setMonth(fechaMeta.getMonth()+mesesRestantes);
+      forecastText=`📅 Proyección: ${fechaMeta.toLocaleDateString('es-CL',{month:'long',year:'numeric'})} (${mesesRestantes} mes${mesesRestantes!==1?'es':''})`;
+    } else {
+      forecastText='💡 Define un aporte mensual para proyectar';
+    }
+    return `<div class="meta-card" style="--meta-color:${m.color}">
+      <div class="meta-header">
+        <div class="meta-emoji">${m.icon}</div>
+        <div class="meta-info">
+          <div class="meta-name">${m.nombre}</div>
+          <div class="meta-dates">Creada ${fmtDate(m.creado)} · Aporte mensual: ${m.mensual?fmt(m.mensual):'según ahorro'}</div>
+        </div>
+        <div class="meta-amount">
+          <div class="meta-current">${fmt(m.actual)}</div>
+          <div class="meta-target">de ${fmt(m.objetivo)}</div>
+        </div>
+      </div>
+      <div class="meta-pbar"><div class="meta-pbar-fill" style="width:${pct}%;background:${m.color}"></div></div>
+      <div class="meta-footer">
+        <span class="meta-forecast">${forecastText}</span>
+        <div style="display:flex;align-items:center;gap:6px">
+          <span style="font-size:12px;color:var(--muted)">${pct}%</span>
+          <input type="number" placeholder="Actualizar $" min="0" inputmode="numeric"
+            style="width:110px;font-size:11px;padding:4px 8px"
+            onchange="updateMetaActual(${m.id},this.value);this.value=''"
+            onclick="event.stopPropagation()"/>
+          <button class="btn-del" onclick="deleteMeta(${m.id})">×</button>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+/* ════════════════════════════════════
+   QUICK CATEGORY BUTTONS
+════════════════════════════════════ */
+const QUICK_CATS=['Alimentación','Transporte','Vivienda','Ocio','Salud','Racional'];
+function renderQuickCats(){
+  const bar=document.getElementById('quick-cats-bar');
+  if(!bar)return;
+  bar.innerHTML=QUICK_CATS.filter(c=>allCats().find(x=>x.id===c)).map(c=>{
+    const cat=allCats().find(x=>x.id===c);
+    return `<button class="quick-cat-btn" onclick="selectQuickCat('${c}')">${cat.emoji} ${c}</button>`;
+  }).join('');
+}
+function selectQuickCat(cat){
+  const sel=document.getElementById('f-cat');
+  if(sel){sel.value=cat;}
+  document.querySelectorAll('.quick-cat-btn').forEach(b=>b.classList.toggle('active',b.textContent.includes(cat)));
+}
+
+/* ════════════════════════════════════
+   RESPALDO — recordatorio
+════════════════════════════════════ */
+function checkBackupReminder(){
+  if(localStorage.getItem('fh_backup_remind')==='0')return;
+  const last=localStorage.getItem('fh_last_backup');
+  if(!last)return;
+  const daysSince=Math.floor((Date.now()-parseInt(last))/(1000*60*60*24));
+  if(daysSince>=30){
+    const bar=document.getElementById('install-banner-wrap');
+    if(bar&&!bar.innerHTML){
+      bar.innerHTML=`<div class="data-safety-bar"><span style="font-size:18px;flex-shrink:0">💾</span><div style="flex:1"><strong>¡Respaldo pendiente!</strong> Hace ${daysSince} días que no exportas tus datos. Si limpias el caché los perderás.</div><button class="btn-ghost" style="font-size:11px;white-space:nowrap" onclick="exportJSON();this.closest('.data-safety-bar').remove()">Exportar ahora</button></div>`;
+    }
+  }
+}
+
+/* Override exportJSON to track last backup */
+const _origExportJSON = exportJSON;
+function exportJSON(){
+  _origExportJSON();
+  localStorage.setItem('fh_last_backup',Date.now().toString());
+}
+
+/* ════════════════════════════════════
+   BENCHMARK S&P 500 en página stocks
+════════════════════════════════════ */
+function renderBenchmarkCard(){
+  const wrap=document.getElementById('benchmark-wrap');
+  if(!wrap)return;
+  // Rendimientos históricos aproximados (datos conocidos hasta 2025)
+  const benchmarks=[
+    {name:'S&P 500 (VOO)',ytd:'~8%',un_ano:'~25%',cinco_anos:'~15%/año',color:'#4ade9a'},
+    {name:'Nasdaq 100 (QQQ/QQQM)',ytd:'~9%',un_ano:'~28%',cinco_anos:'~18%/año',color:'#60a5fa'},
+    {name:'Mercado Global (VXUS)',ytd:'~5%',un_ano:'~12%',cinco_anos:'~7%/año',color:'#a78bfa'},
+  ];
+  wrap.innerHTML=`<div class="card">
+    <div class="card-title">Rendimientos de referencia (históricos)</div>
+    <div style="font-size:11px;color:var(--muted);margin-bottom:10px">Datos de referencia — úsalos para contextualizar tu portafolio</div>
+    ${benchmarks.map(b=>`<div class="bench-row">
+      <span style="font-weight:500">${b.name}</span>
+      <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;justify-content:flex-end">
+        <span class="bench-tag bench-up">YTD ${b.ytd}</span>
+        <span class="bench-tag bench-up">1A ${b.un_ano}</span>
+        <span style="font-size:11px;color:var(--muted)">5A: ${b.cinco_anos}</span>
+      </div>
+    </div>`).join('')}
+  </div>`;
+}
+
 </script>
 </body>
 </html>
